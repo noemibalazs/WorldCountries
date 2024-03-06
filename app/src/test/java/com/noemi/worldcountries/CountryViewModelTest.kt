@@ -2,7 +2,6 @@ package com.noemi.worldcountries
 
 import app.cash.turbine.test
 import com.noemi.worldcountries.models.Country
-import com.noemi.worldcountries.models.DetailedCountry
 import com.noemi.worldcountries.screens.viewmodel.CountryViewModel
 import com.google.common.truth.Truth.assertThat
 import com.noemi.worldcountries.usecase.GetCountriesUseCase
@@ -34,9 +33,6 @@ class CountryViewModelTest {
     @Mock
     private lateinit var country: Country
 
-    @Mock
-    private lateinit var detailedCountry: DetailedCountry
-
     private val dispatcher: TestDispatcher = UnconfinedTestDispatcher()
 
     private lateinit var viewModel: CountryViewModel
@@ -61,10 +57,16 @@ class CountryViewModelTest {
     @Test
     fun `test initialise countries and should pass`() = runBlocking {
         val job = launch {
+
+            assertThat(viewModel.countriesState.value.isLoading).isTrue()
+
             viewModel.countriesState.test {
                 val state = awaitItem()
-                assertThat(false).isEqualTo(state.isLoading)
-                assertThat(true).isEqualTo(state.countries.isNotEmpty())
+
+                assertThat(state.isLoading).isFalse()
+                val countries = getCountriesUseCase.execute()
+                assertThat(state.countries).isEqualTo(countries)
+
                 cancelAndConsumeRemainingEvents()
             }
         }
@@ -77,9 +79,14 @@ class CountryViewModelTest {
     @Test
     fun `test get country and should pass`() = runBlocking {
         val job = launch {
+            saveCountryUseCase.execute(country)
+
             viewModel.countryState.test {
                 val state = awaitItem()
+
+                val detailedCountry = getCountryUseCase.execute(country.code)
                 assertThat(state.selectedCountry).isEqualTo(detailedCountry)
+
                 cancelAndConsumeRemainingEvents()
             }
         }

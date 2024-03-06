@@ -8,27 +8,20 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.material.TopAppBar
-import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -36,7 +29,7 @@ import androidx.constraintlayout.compose.Dimension
 import com.noemi.worldcountries.R
 import com.noemi.worldcountries.models.Country
 import com.noemi.worldcountries.screens.viewmodel.FavoritesViewModel
-import com.noemi.worldcountries.ui.theme.philosopherFamily
+import com.noemi.worldcountries.utils.CountryAppBar
 import kotlinx.coroutines.delay
 
 
@@ -47,26 +40,14 @@ fun FavoritesScreen(viewModel: FavoritesViewModel) {
 
     Column(modifier = Modifier.fillMaxSize()) {
 
-        TopAppBar(
-            title = {
-                Text(
-                    text = stringResource(id = R.string.label_favorites),
-                    fontFamily = philosopherFamily,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    fontSize = 20.sp
-                )
-            },
-            elevation = 6.dp,
-            backgroundColor = MaterialTheme.colorScheme.primaryContainer
-        )
+        CountryAppBar(title = stringResource(id = R.string.label_favorites))
 
-        CountrySearchComponent(viewModel = viewModel)
+        CountrySearchTextField(viewModel = viewModel)
 
-        FavoriteComponent(countries = favoritesState)
+        RenderContent(countries = favoritesState)
 
         countryState.country?.let { country ->
-            SearchedCountryDialog(country = country) {
+            DisplaySearchedCountryDialog(country = country) {
                 viewModel.dismissCountry()
                 viewModel.updateSearchedCountryName("")
             }
@@ -75,7 +56,7 @@ fun FavoritesScreen(viewModel: FavoritesViewModel) {
 }
 
 @Composable
-private fun CountrySearchComponent(viewModel: FavoritesViewModel) {
+private fun CountrySearchTextField(viewModel: FavoritesViewModel) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
@@ -92,27 +73,32 @@ private fun CountrySearchComponent(viewModel: FavoritesViewModel) {
         value = viewModel.searchedCountryName,
         onValueChange = { countryName -> viewModel.searchingCountry(countryName) },
         label = { Text(text = stringResource(id = R.string.label_country)) },
-        placeholder = { Text(text = stringResource(id = R.string.label_search_hint)) },
+        placeholder = { Text(
+            text = stringResource(id = R.string.label_search_hint),
+            style = MaterialTheme.typography.titleMedium
+        ) },
         singleLine = true,
         keyboardOptions = KeyboardOptions.Default.copy(
             autoCorrect = true,
-            keyboardType = KeyboardType.Text,
+            keyboardType = KeyboardType.Password,
             imeAction = ImeAction.Done,
             capitalization = KeyboardCapitalization.Words
         ),
         keyboardActions = KeyboardActions(onDone = {
             focusManager.clearFocus()
         }),
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = MaterialTheme.colorScheme.scrim,
-            unfocusedBorderColor = MaterialTheme.colorScheme.scrim,
-            cursorColor = MaterialTheme.colorScheme.scrim
-        )
+        colors = OutlinedTextFieldDefaults.colors(
+            cursorColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            focusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+
+        ),
+        textStyle = MaterialTheme.typography.titleMedium
     )
 }
 
 @Composable
-private fun FavoriteComponent(countries: List<Country>) {
+private fun RenderContent(countries: List<Country>) {
     ConstraintLayout(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -128,14 +114,14 @@ private fun FavoriteComponent(countries: List<Country>) {
         ) {
 
             items(countries) { country ->
-                CountryItem(country = country)
+                FavoriteCountryItemRow(country = country)
             }
         }
     }
 }
 
 @Composable
-private fun CountryItem(country: Country) {
+private fun FavoriteCountryItemRow(country: Country) {
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -154,30 +140,22 @@ private fun CountryItem(country: Country) {
                 text = country.name,
                 modifier = Modifier
                     .padding(start = 16.dp, top = 8.dp),
-                fontFamily = philosopherFamily,
-                fontSize = 20.sp,
-                textAlign = TextAlign.Start,
-                fontWeight = FontWeight.Bold,
-                style = androidx.compose.material.MaterialTheme.typography.h1
+                style = MaterialTheme.typography.titleMedium
             )
 
             Text(
                 text = country.capital,
                 modifier = Modifier
                     .padding(start = 16.dp, top = 6.dp, bottom = 8.dp),
-                fontSize = 16.sp,
-                fontFamily = philosopherFamily,
-                textAlign = TextAlign.Start,
-                fontWeight = FontWeight.Medium,
-                fontStyle = FontStyle.Italic,
-                style = androidx.compose.material.MaterialTheme.typography.subtitle1
+                fontWeight = FontWeight.Normal,
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }
 }
 
 @Composable
-private fun SearchedCountryDialog(country: Country, onDismiss: () -> Unit) {
+private fun DisplaySearchedCountryDialog(country: Country, onDismiss: () -> Unit) {
     Dialog(onDismissRequest = onDismiss) {
 
         Card(
@@ -206,23 +184,15 @@ private fun SearchedCountryDialog(country: Country, onDismiss: () -> Unit) {
                         text = country.name,
                         modifier = Modifier
                             .padding(start = 16.dp, top = 8.dp),
-                        fontFamily = philosopherFamily,
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Start,
-                        fontWeight = FontWeight.Bold,
-                        style = androidx.compose.material.MaterialTheme.typography.h1
+                        style = MaterialTheme.typography.titleMedium
                     )
 
                     Text(
                         text = country.capital,
                         modifier = Modifier
                             .padding(start = 16.dp, top = 6.dp, bottom = 8.dp),
-                        fontSize = 16.sp,
-                        fontFamily = philosopherFamily,
-                        textAlign = TextAlign.Start,
-                        fontWeight = FontWeight.Medium,
-                        fontStyle = FontStyle.Italic,
-                        style = androidx.compose.material.MaterialTheme.typography.subtitle1
+                        fontWeight = FontWeight.Normal,
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }

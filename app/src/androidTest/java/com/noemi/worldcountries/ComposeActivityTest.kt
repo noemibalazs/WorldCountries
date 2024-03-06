@@ -6,7 +6,7 @@ import androidx.compose.ui.input.key.NativeKeyEvent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
 import com.noemi.worldcountries.screens.composables.CountriesApp
@@ -17,7 +17,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalTestApi::class)
-class CountriesActivityTest {
+class ComposeActivityTest {
 
     @get:Rule
     val composeRule = createAndroidComposeRule<CountriesActivity>()
@@ -26,30 +26,26 @@ class CountriesActivityTest {
 
     @Before
     fun setupCountriesApp() {
-        composeRule.activity.runOnUiThread {
+        composeRule.activity.setContent {
+            navController = TestNavHostController(LocalContext.current)
+            navController?.navigatorProvider?.addNavigator(ComposeNavigator())
 
-            composeRule.activity.setContent {
-                navController = TestNavHostController(LocalContext.current)
-                navController?.navigatorProvider?.addNavigator(ComposeNavigator())
-
-                navController?.let {
-                    CountriesApp(it, viewModel(), viewModel())
-                }
+            navController?.let {
+                CountriesApp(it, hiltViewModel(), hiltViewModel())
             }
         }
     }
 
     @Test
-    fun navHostControllerVerifyHomeScreen() {
+    fun testHomeScreen() {
         composeRule.onNodeWithStringId(R.string.label_countries).isDisplayed()
         navController?.assertCurrentRouteName(NavRoutes.Home.route)
         composeRule.onNodeWithStringId(R.string.label_home).performClick()
         navigateToFavoriteScreen()
     }
 
-
     @Test
-    fun navHostControllerVerifyFavoriteScreen() {
+    fun testFavoriteScreen() {
         composeRule.onNodeWithStringId(R.string.label_favorites).performClick()
         navController?.assertCurrentRouteName(NavRoutes.Favorites.route)
         navigateToHomeScreen()
@@ -73,7 +69,7 @@ class CountriesActivityTest {
     }
 
     @Test
-    fun navHostControllerNavigateUp() {
+    fun testNavControllerNavigateUp() {
         navigateToHomeScreen()
         navController?.navigateUp()
     }

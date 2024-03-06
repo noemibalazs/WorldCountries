@@ -6,15 +6,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.TopAppBar
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.*
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -22,7 +19,7 @@ import com.noemi.worldcountries.R
 import com.noemi.worldcountries.models.Country
 import com.noemi.worldcountries.models.DetailedCountry
 import com.noemi.worldcountries.screens.viewmodel.CountryViewModel
-import com.noemi.worldcountries.ui.theme.philosopherFamily
+import com.noemi.worldcountries.utils.CountryAppBar
 
 @Composable
 fun HomeScreen(viewModel: CountryViewModel) {
@@ -34,24 +31,12 @@ fun HomeScreen(viewModel: CountryViewModel) {
         modifier = Modifier.fillMaxSize()
     ) {
 
-        TopAppBar(
-            title = {
-                Text(
-                    text = stringResource(id = R.string.label_countries),
-                    fontFamily = philosopherFamily,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    fontSize = 20.sp
-                )
-            },
-            elevation = 6.dp,
-            backgroundColor = MaterialTheme.colorScheme.primaryContainer
-        )
+        CountryAppBar(title = stringResource(id = R.string.label_countries))
 
-        MainContent(countriesState = countriesState, viewModel = viewModel)
+        RenderContent(countriesState = countriesState, viewModel = viewModel)
 
         countryState.selectedCountry?.let {
-            CountryDialog(country = it) {
+            DisplayCountryDialog(country = it) {
                 viewModel.dismissCountry()
             }
         }
@@ -59,7 +44,7 @@ fun HomeScreen(viewModel: CountryViewModel) {
 }
 
 @Composable
-private fun MainContent(countriesState: CountryViewModel.CountriesState, viewModel: CountryViewModel) {
+private fun RenderContent(countriesState: CountryViewModel.CountriesState, viewModel: CountryViewModel) {
 
     ConstraintLayout(
         modifier = Modifier.fillMaxSize()
@@ -73,7 +58,7 @@ private fun MainContent(countriesState: CountryViewModel.CountriesState, viewMod
                     linkTo(parent.start, parent.end)
                     linkTo(parent.top, parent.bottom)
                 },
-                color = MaterialTheme.colorScheme.secondaryContainer,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 strokeWidth = 3.dp
             )
 
@@ -85,7 +70,7 @@ private fun MainContent(countriesState: CountryViewModel.CountriesState, viewMod
                 }) {
 
                 items(countriesState.countries) { country ->
-                    CountryItem(
+                    CountryItemRow(
                         country = country,
                         viewModel = viewModel
                     )
@@ -96,7 +81,7 @@ private fun MainContent(countriesState: CountryViewModel.CountriesState, viewMod
 }
 
 @Composable
-private fun CountryItem(country: Country, viewModel: CountryViewModel) {
+private fun CountryItemRow(country: Country, viewModel: CountryViewModel) {
 
     Row(
         modifier = Modifier
@@ -117,30 +102,22 @@ private fun CountryItem(country: Country, viewModel: CountryViewModel) {
                 text = country.name,
                 modifier = Modifier
                     .padding(start = 16.dp, top = 8.dp),
-                fontFamily = philosopherFamily,
-                fontSize = 20.sp,
-                textAlign = TextAlign.Start,
-                fontWeight = FontWeight.Bold,
-                style = androidx.compose.material.MaterialTheme.typography.h1
+                style = MaterialTheme.typography.titleMedium
             )
 
             Text(
                 text = country.capital,
                 modifier = Modifier
                     .padding(start = 16.dp, top = 6.dp, bottom = 8.dp),
-                fontSize = 16.sp,
-                fontFamily = philosopherFamily,
-                textAlign = TextAlign.Start,
                 fontWeight = FontWeight.Medium,
-                fontStyle = FontStyle.Italic,
-                style = androidx.compose.material.MaterialTheme.typography.subtitle1
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }
 }
 
 @Composable
-private fun CountryDialog(country: DetailedCountry, onDismiss: () -> Unit) {
+private fun DisplayCountryDialog(country: DetailedCountry, onDismiss: () -> Unit) {
     Dialog(onDismissRequest = onDismiss) {
 
         Card(
@@ -163,20 +140,14 @@ private fun CountryDialog(country: DetailedCountry, onDismiss: () -> Unit) {
                 ) {
                     Text(
                         text = country.emoji,
-                        fontFamily = philosopherFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontStyle = FontStyle.Normal,
-                        fontSize = 42.sp
+                        style = MaterialTheme.typography.bodyLarge
                     )
 
                     Spacer(modifier = Modifier.width(8.dp))
 
                     Text(
                         text = country.name,
-                        fontFamily = philosopherFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontStyle = FontStyle.Normal,
-                        fontSize = 42.sp
+                        style = MaterialTheme.typography.bodyLarge
                     )
                 }
 
@@ -185,11 +156,8 @@ private fun CountryDialog(country: DetailedCountry, onDismiss: () -> Unit) {
                 Text(
                     text = "Continent: ${country.continent}",
                     modifier = Modifier
-                        .align(Alignment.Start)
                         .padding(start = 16.dp),
-                    fontFamily = philosopherFamily,
-                    fontWeight = FontWeight.Normal,
-                    fontStyle = FontStyle.Italic
+                    style = MaterialTheme.typography.bodyMedium
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -197,11 +165,8 @@ private fun CountryDialog(country: DetailedCountry, onDismiss: () -> Unit) {
                 Text(
                     text = "Currency: ${country.currency}",
                     modifier = Modifier
-                        .align(Alignment.Start)
                         .padding(start = 16.dp),
-                    fontFamily = philosopherFamily,
-                    fontWeight = FontWeight.Normal,
-                    fontStyle = FontStyle.Italic
+                    style = MaterialTheme.typography.bodyMedium
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -209,11 +174,8 @@ private fun CountryDialog(country: DetailedCountry, onDismiss: () -> Unit) {
                 Text(
                     text = "Capital: ${country.capital}",
                     modifier = Modifier
-                        .align(Alignment.Start)
                         .padding(start = 16.dp),
-                    fontFamily = philosopherFamily,
-                    fontWeight = FontWeight.Normal,
-                    fontStyle = FontStyle.Italic
+                    style = MaterialTheme.typography.bodyMedium
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -221,11 +183,8 @@ private fun CountryDialog(country: DetailedCountry, onDismiss: () -> Unit) {
                 Text(
                     text = "Language(s): ${country.language}",
                     modifier = Modifier
-                        .align(Alignment.Start)
                         .padding(start = 16.dp, end = 16.dp),
-                    fontFamily = philosopherFamily,
-                    fontWeight = FontWeight.Normal,
-                    fontStyle = FontStyle.Italic
+                    style = MaterialTheme.typography.bodyMedium
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))

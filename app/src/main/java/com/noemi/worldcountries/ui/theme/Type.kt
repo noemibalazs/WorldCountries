@@ -1,37 +1,47 @@
 package com.noemi.worldcountries.ui.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.sp
 import com.noemi.worldcountries.R
-
-// Set of Material typography styles to start with
-val Typography = Typography(
-    bodyMedium = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp
-    )
-    /* Other default text styles to override
-    button = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.W500,
-        fontSize = 14.sp
-    ),
-    caption = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp
-    )
-    */
-)
 
 val philosopherFamily = FontFamily(
     Font(R.font.philosopher_regular, FontWeight.Normal),
     Font(R.font.philosopher_italic, FontWeight.Normal, FontStyle.Italic),
     Font(R.font.philosopher_bold, FontWeight.Bold)
+)
+
+
+val Typography = Typography(
+
+    bodyLarge = TextStyle(
+        fontFamily = philosopherFamily,
+        fontSize = 42.sp,
+        fontWeight = FontWeight.Bold
+    ),
+
+    bodyMedium = TextStyle(
+        fontFamily = philosopherFamily,
+        fontSize = 16.sp,
+        fontStyle = FontStyle.Italic
+    ),
+
+    bodySmall = TextStyle(
+        fontFamily = philosopherFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 14.sp
+    ),
+
+    titleMedium = TextStyle(
+        fontFamily = philosopherFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp
+    )
 )

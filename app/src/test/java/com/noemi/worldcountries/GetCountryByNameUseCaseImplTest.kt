@@ -14,7 +14,7 @@ import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
 @ExperimentalCoroutinesApi
-class GetCountryByNameUseCaseTest {
+class GetCountryByNameUseCaseImplTest {
 
     @Mock
     private lateinit var countryDAO: CountryDAO

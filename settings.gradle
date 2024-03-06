@@ -12,5 +12,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "WorldComposed"
+rootProject.name = "WorldCountries"
 include ':app'

@@ -1,12 +1,12 @@
 package com.noemi.worldcountries
 
 import app.cash.turbine.test
-import com.noemi.worldcountries.models.Country
 import com.noemi.worldcountries.screens.viewmodel.FavoritesViewModel
 import com.google.common.truth.Truth.assertThat
 import com.noemi.worldcountries.usecase.GetCountryByNameUseCase
 import com.noemi.worldcountries.usecase.GetFavoriteCountriesUseCase
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Before
@@ -51,7 +51,10 @@ class FavoriteViewModelTest {
         val job = launch {
             viewModel.favoriteCountriesState.test {
                 val state = awaitItem()
-                assertThat(true).isEqualTo(state.isNotEmpty())
+
+                val result = getFavoriteCountriesUseCase.execute().collect()
+                assertThat(state).isEqualTo(result)
+
                 cancelAndConsumeRemainingEvents()
             }
         }
@@ -65,12 +68,14 @@ class FavoriteViewModelTest {
     @Test
     fun `test searching country by name and should pass`() = runBlocking {
         val name = "Hungary"
-        val country = Country("HU", name, "emoji", "Budapest")
 
         val job = launch {
             viewModel.countryState.test {
                 val state = awaitItem()
-                assertThat(country).isEqualTo(state.country)
+
+                val result = getCountryByNameUseCase.execute(name)
+                assertThat(state).isEqualTo(result)
+
                 cancelAndConsumeRemainingEvents()
             }
         }
