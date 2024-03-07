@@ -1,6 +1,6 @@
 World Countries
 
-ToDo: Design and implement and application using the GraphQL following the next steps:
+ToDo: Design and implement an application following the next steps:
 
 1. Fetch the world countries using GraphQL
 2. Clicking on a country will save the country into the locale database
