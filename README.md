@@ -15,11 +15,8 @@ Libraries:
 4. Flow
 5. Room
 6. MVVM architecture
-7. Material design
+7. Material Design 3
 8. Turbine
 9. Espresso
-
- 
- ![Screenshot_20240227_214703_World Countries](https://github.com/noemibalazs/WorldCountries/assets/33603567/54cc4218-a057-4b96-a4eb-087af3ac888f)
- 
-![Screenshot_20240227_214710_World Countries](https://github.com/noemibalazs/WorldCountries/assets/33603567/bc77f92e-f405-40a6-9edb-5f46eae0012f)
+![Screenshot_20240307_084451_World Countries](https://github.com/noemibalazs/WorldCountries/assets/33603567/ae683718-7b09-4ced-b548-942eee6e347c)
+![Screenshot_20240307_084439_World Countries](https://github.com/noemibalazs/WorldCountries/assets/33603567/9d735724-5123-413f-b1e0-5359a91b1436)
