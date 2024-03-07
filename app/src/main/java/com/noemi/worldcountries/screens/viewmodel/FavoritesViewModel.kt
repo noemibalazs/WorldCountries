@@ -26,6 +26,7 @@ class FavoritesViewModel @Inject constructor(
     val countryState = _countryState.asStateFlow()
 
     var searchedCountryName by mutableStateOf("")
+    var isSearchError by mutableStateOf(false)
 
     init {
         initialiseFavoriteCountries()
@@ -39,15 +40,11 @@ class FavoritesViewModel @Inject constructor(
         }
     }
 
-    fun searchingCountry(countryName: String) {
-        updateSearchedCountryName(countryName)
-
+    fun findCountryByName(countryName: String) {
         viewModelScope.launch {
-            _countryState.update {
-                it.copy(
-                    country = getCountryByNameUseCase.execute(countryName)
-                )
-            }
+            val result = getCountryByNameUseCase.execute(countryName)
+            _countryState.update { it.copy(country = result) }
+            isSearchError = result == null
         }
     }
 

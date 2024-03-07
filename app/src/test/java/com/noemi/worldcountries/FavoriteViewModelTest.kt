@@ -66,21 +66,23 @@ class FavoriteViewModelTest {
 
 
     @Test
-    fun `test searching country by name and should pass`() = runBlocking {
+    fun `test find country by name and should pass`() = runBlocking {
         val name = "Hungary"
 
         val job = launch {
+            assertThat(viewModel.isSearchError).isEqualTo(false)
             viewModel.countryState.test {
                 val state = awaitItem()
 
                 val result = getCountryByNameUseCase.execute(name)
                 assertThat(state).isEqualTo(result)
+                assertThat(viewModel.isSearchError).isEqualTo(false)
 
                 cancelAndConsumeRemainingEvents()
             }
         }
 
-        viewModel.searchingCountry(name)
+        viewModel.findCountryByName(name)
 
         job.cancelAndJoin()
     }

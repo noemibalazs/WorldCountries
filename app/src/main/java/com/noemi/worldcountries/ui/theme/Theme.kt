@@ -1,7 +1,6 @@
 package com.noemi.worldcountries.ui.theme
 
 import android.app.Activity
-import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
@@ -10,7 +9,6 @@ import androidx.core.view.WindowCompat
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun CountriesComposedTheme(

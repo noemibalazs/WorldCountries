@@ -17,7 +17,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalTestApi::class)
-class ComposeActivityTest {
+class CountriesActivityTest {
 
     @get:Rule
     val composeRule = createAndroidComposeRule<CountriesActivity>()

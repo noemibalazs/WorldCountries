@@ -1,6 +1,7 @@
 package com.noemi.worldcountries.screens.composables
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -8,6 +9,8 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
@@ -16,7 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.input.ImeAction
@@ -58,7 +61,7 @@ fun FavoritesScreen(viewModel: FavoritesViewModel) {
 @Composable
 private fun CountrySearchTextField(viewModel: FavoritesViewModel) {
     val focusRequester = remember { FocusRequester() }
-    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(Unit) {
         delay(120)
@@ -71,12 +74,21 @@ private fun CountrySearchTextField(viewModel: FavoritesViewModel) {
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, top = 20.dp),
         value = viewModel.searchedCountryName,
-        onValueChange = { countryName -> viewModel.searchingCountry(countryName) },
+        onValueChange = { countryName ->
+            viewModel.updateSearchedCountryName(countryName)
+        },
         label = { Text(text = stringResource(id = R.string.label_country)) },
-        placeholder = { Text(
-            text = stringResource(id = R.string.label_search_hint),
-            style = MaterialTheme.typography.titleMedium
-        ) },
+        placeholder = {
+            Text(
+                text = stringResource(id = R.string.label_search_hint),
+                style = MaterialTheme.typography.titleMedium
+            )
+        },
+        isError = viewModel.isSearchError,
+        supportingText = {
+            if (viewModel.isSearchError)
+                Text(text = stringResource(id = R.string.label_error_no_saved_result))
+        },
         singleLine = true,
         keyboardOptions = KeyboardOptions.Default.copy(
             autoCorrect = true,
@@ -85,15 +97,25 @@ private fun CountrySearchTextField(viewModel: FavoritesViewModel) {
             capitalization = KeyboardCapitalization.Words
         ),
         keyboardActions = KeyboardActions(onDone = {
-            focusManager.clearFocus()
+            viewModel.findCountryByName(viewModel.searchedCountryName)
         }),
         colors = OutlinedTextFieldDefaults.colors(
             cursorColor = MaterialTheme.colorScheme.onSurfaceVariant,
             focusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-
+            unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant
         ),
-        textStyle = MaterialTheme.typography.titleMedium
+        textStyle = MaterialTheme.typography.titleMedium,
+        trailingIcon = {
+            Icon(
+                imageVector = Icons.Default.Clear,
+                contentDescription = null,
+                modifier = Modifier.clickable {
+                    keyboardController?.hide()
+                    viewModel.updateSearchedCountryName("")
+                    viewModel.isSearchError = false
+                }
+            )
+        }
     )
 }
 
