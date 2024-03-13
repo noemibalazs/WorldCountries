@@ -47,7 +47,7 @@ fun FavoritesScreen(viewModel: FavoritesViewModel) {
 
         CountrySearchTextField(viewModel = viewModel)
 
-        RenderContent(countries = favoritesState)
+        FavoriteScreenRoot(countries = favoritesState)
 
         countryState.country?.let { country ->
             DisplaySearchedCountryDialog(country = country) {
@@ -120,7 +120,7 @@ private fun CountrySearchTextField(viewModel: FavoritesViewModel) {
 }
 
 @Composable
-private fun RenderContent(countries: List<Country>) {
+private fun FavoriteScreenRoot(countries: List<Country>) {
     ConstraintLayout(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -135,7 +135,10 @@ private fun RenderContent(countries: List<Country>) {
             }
         ) {
 
-            items(countries) { country ->
+            items(
+                items = countries,
+                key = { it.capital }
+            ) { country ->
                 FavoriteCountryItemRow(country = country)
             }
         }

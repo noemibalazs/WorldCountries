@@ -33,7 +33,7 @@ fun HomeScreen(viewModel: CountryViewModel) {
 
         CountryAppBar(title = stringResource(id = R.string.label_countries))
 
-        RenderContent(countriesState = countriesState, viewModel = viewModel)
+        HomeScreenRoot(countriesState = countriesState, viewModel = viewModel)
 
         countryState.selectedCountry?.let {
             DisplayCountryDialog(country = it) {
@@ -44,7 +44,7 @@ fun HomeScreen(viewModel: CountryViewModel) {
 }
 
 @Composable
-private fun RenderContent(countriesState: CountryViewModel.CountriesState, viewModel: CountryViewModel) {
+private fun HomeScreenRoot(countriesState: CountryViewModel.CountriesState, viewModel: CountryViewModel) {
 
     ConstraintLayout(
         modifier = Modifier.fillMaxSize()
@@ -69,7 +69,10 @@ private fun RenderContent(countriesState: CountryViewModel.CountriesState, viewM
                     linkTo(parent.top, parent.bottom)
                 }) {
 
-                items(countriesState.countries) { country ->
+                items(
+                    items = countriesState.countries,
+                    key = { it.capital }
+                ) { country ->
                     CountryItemRow(
                         country = country,
                         viewModel = viewModel
