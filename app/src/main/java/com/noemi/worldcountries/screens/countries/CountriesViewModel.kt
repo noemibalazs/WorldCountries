@@ -1,4 +1,4 @@
-package com.noemi.worldcountries.screens.viewmodel
+package com.noemi.worldcountries.screens.countries
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
-class CountryViewModel @Inject constructor(
+class CountriesViewModel @Inject constructor(
     private val getCountriesUseCase: GetCountriesUseCase,
     private val saveCountryUseCase: SaveCountryUseCase,
     private val getCountryUseCase: GetCountryUseCase

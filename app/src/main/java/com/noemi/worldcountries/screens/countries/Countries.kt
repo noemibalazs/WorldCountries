@@ -1,4 +1,4 @@
-package com.noemi.worldcountries.screens.composables
+package com.noemi.worldcountries.screens.countries
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,12 +19,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.noemi.worldcountries.R
 import com.noemi.worldcountries.models.Country
 import com.noemi.worldcountries.models.DetailedCountry
-import com.noemi.worldcountries.screens.viewmodel.CountryViewModel
 import com.noemi.worldcountries.utils.CountryAppBar
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
-    val viewModel = hiltViewModel<CountryViewModel>()
+fun CountriesScreen(modifier: Modifier = Modifier) {
+    val viewModel = hiltViewModel<CountriesViewModel>()
     val countriesState by viewModel.countriesState.collectAsState()
     val countryState by viewModel.countryState.collectAsState()
 
@@ -34,16 +33,16 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 
         CountryAppBar(title = stringResource(id = R.string.label_countries))
 
-        HomeScreenRoot(countriesState = countriesState, onSaveCountry = viewModel::saveDisplayCountry)
+        CountriesRoot(countriesState = countriesState, onSaveCountry = viewModel::saveDisplayCountry)
 
         countryState.selectedCountry?.let {
-            DisplayCountryDialog(country = it, onDismiss = viewModel::dismissCountry)
+            CountryDialog(country = it, onDismiss = viewModel::dismissCountry)
         }
     }
 }
 
 @Composable
-private fun HomeScreenRoot(countriesState: CountryViewModel.CountriesState, onSaveCountry: (Country) -> Unit, modifier: Modifier = Modifier) {
+private fun CountriesRoot(countriesState: CountriesViewModel.CountriesState, onSaveCountry: (Country) -> Unit, modifier: Modifier = Modifier) {
 
     ConstraintLayout(
         modifier = modifier.fillMaxSize()
@@ -119,7 +118,7 @@ private fun CountryItemRow(country: Country, onSaveCountry: (Country) -> Unit, m
 }
 
 @Composable
-private fun DisplayCountryDialog(country: DetailedCountry, onDismiss: () -> Unit, modifier: Modifier = Modifier) {
+private fun CountryDialog(country: DetailedCountry, onDismiss: () -> Unit, modifier: Modifier = Modifier) {
     Dialog(onDismissRequest = onDismiss) {
 
         Card(

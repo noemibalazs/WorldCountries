@@ -1,4 +1,4 @@
-package com.noemi.worldcountries.screens.viewmodel
+package com.noemi.worldcountries.screens.favorites
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

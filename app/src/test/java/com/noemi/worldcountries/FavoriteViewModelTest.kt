@@ -1,7 +1,7 @@
 package com.noemi.worldcountries
 
 import app.cash.turbine.test
-import com.noemi.worldcountries.screens.viewmodel.FavoritesViewModel
+import com.noemi.worldcountries.screens.favorites.FavoritesViewModel
 import com.google.common.truth.Truth.assertThat
 import com.noemi.worldcountries.usecase.GetCountryByNameUseCase
 import com.noemi.worldcountries.usecase.GetFavoriteCountriesUseCase

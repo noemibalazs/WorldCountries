@@ -1,4 +1,4 @@
-package com.noemi.worldcountries.screens.composables
+package com.noemi.worldcountries.screens.main
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.*
@@ -10,6 +10,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.noemi.worldcountries.screens.countries.CountriesScreen
+import com.noemi.worldcountries.screens.favorites.FavoritesScreen
 import com.noemi.worldcountries.screens.navigation.NavRoutes
 import com.noemi.worldcountries.screens.navigation.CountryNavigationItems
 
@@ -30,7 +32,7 @@ fun CountriesApp(navController: NavHostController = rememberNavController()) {
 private fun NavigationHost(navController: NavHostController) {
     NavHost(navController = navController, startDestination = NavRoutes.Home.route) {
         composable(NavRoutes.Home.route) {
-            HomeScreen()
+            CountriesScreen()
         }
 
         composable(NavRoutes.Favorites.route) {

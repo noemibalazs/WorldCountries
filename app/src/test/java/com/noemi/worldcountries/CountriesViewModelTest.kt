@@ -2,7 +2,7 @@ package com.noemi.worldcountries
 
 import app.cash.turbine.test
 import com.noemi.worldcountries.models.Country
-import com.noemi.worldcountries.screens.viewmodel.CountryViewModel
+import com.noemi.worldcountries.screens.countries.CountriesViewModel
 import com.google.common.truth.Truth.assertThat
 import com.noemi.worldcountries.usecase.GetCountriesUseCase
 import com.noemi.worldcountries.usecase.GetCountryUseCase
@@ -19,7 +19,7 @@ import org.mockito.junit.MockitoJUnitRunner
 
 @ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
-class CountryViewModelTest {
+class CountriesViewModelTest {
 
     @Mock
     private lateinit var getCountriesUseCase: GetCountriesUseCase
@@ -35,14 +35,14 @@ class CountryViewModelTest {
 
     private val dispatcher: TestDispatcher = UnconfinedTestDispatcher()
 
-    private lateinit var viewModel: CountryViewModel
+    private lateinit var viewModel: CountriesViewModel
 
     @Before
     fun setUp() {
         Dispatchers.setMain(dispatcher)
         MockitoAnnotations.openMocks(this)
 
-        viewModel = CountryViewModel(
+        viewModel = CountriesViewModel(
             getCountriesUseCase = getCountriesUseCase,
             saveCountryUseCase = saveCountryUseCase,
             getCountryUseCase = getCountryUseCase

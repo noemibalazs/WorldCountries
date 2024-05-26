@@ -1,4 +1,4 @@
-package com.noemi.worldcountries.screens.composables
+package com.noemi.worldcountries.screens.favorites
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,7 +32,6 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.noemi.worldcountries.R
 import com.noemi.worldcountries.models.Country
-import com.noemi.worldcountries.screens.viewmodel.FavoritesViewModel
 import com.noemi.worldcountries.utils.CountryAppBar
 import kotlinx.coroutines.delay
 
@@ -55,10 +54,10 @@ fun FavoritesScreen() {
             onFindCountry = viewModel::findCountryByName
         )
 
-        FavoriteScreenRoot(countries = favoritesState)
+        FavoritesRoot(countries = favoritesState)
 
         countryState.country?.let { country ->
-            DisplaySearchedCountryDialog(country = country, onDismiss = {
+            SearchedCountryDialog(country = country, onDismiss = {
                 viewModel.dismissCountry()
                 viewModel.updateSearchedCountryName("")
             })
@@ -135,7 +134,7 @@ private fun CountrySearchTextField(
 }
 
 @Composable
-private fun FavoriteScreenRoot(countries: List<Country>, modifier: Modifier = Modifier) {
+private fun FavoritesRoot(countries: List<Country>, modifier: Modifier = Modifier) {
     ConstraintLayout(
         modifier = modifier.fillMaxSize()
     ) {
@@ -195,7 +194,7 @@ private fun FavoriteCountryItemRow(country: Country, modifier: Modifier = Modifi
 }
 
 @Composable
-private fun DisplaySearchedCountryDialog(country: Country, onDismiss: () -> Unit, modifier: Modifier = Modifier) {
+private fun SearchedCountryDialog(country: Country, onDismiss: () -> Unit, modifier: Modifier = Modifier) {
     Dialog(onDismissRequest = onDismiss) {
 
         Card(
