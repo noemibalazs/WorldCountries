@@ -8,8 +8,8 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
-import com.noemi.worldcountries.screens.composables.CountriesApp
 import com.noemi.worldcountries.screens.main.CountriesActivity
+import com.noemi.worldcountries.screens.main.CountriesApp
 import com.noemi.worldcountries.screens.navigation.NavRoutes
 import org.junit.Before
 import org.junit.Rule

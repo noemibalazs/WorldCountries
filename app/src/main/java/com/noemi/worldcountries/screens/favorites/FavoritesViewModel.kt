@@ -20,7 +20,11 @@ class FavoritesViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _favoriteCountriesState = MutableStateFlow(emptyList<Country>())
-    val favoriteCountriesState = _favoriteCountriesState.asStateFlow()
+    val favoriteCountriesState = _favoriteCountriesState.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Lazily,
+        initialValue = emptyList()
+    )
 
     private val _countryState = MutableStateFlow(CountryState())
     val countryState = _countryState.asStateFlow()
@@ -34,8 +38,8 @@ class FavoritesViewModel @Inject constructor(
 
     fun initialiseFavoriteCountries() {
         viewModelScope.launch {
-            getFavoriteCountriesUseCase.execute().onEach {
-                _favoriteCountriesState.value = it
+            getFavoriteCountriesUseCase.execute().onEach { countries ->
+                _favoriteCountriesState.value = countries.sortedBy { it.name }
             }.collect()
         }
     }
