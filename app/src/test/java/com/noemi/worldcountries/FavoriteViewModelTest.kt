@@ -5,26 +5,19 @@ import com.noemi.worldcountries.screens.favorites.FavoritesViewModel
 import com.google.common.truth.Truth.assertThat
 import com.noemi.worldcountries.usecase.GetCountryByNameUseCase
 import com.noemi.worldcountries.usecase.GetFavoriteCountriesUseCase
+import io.mockk.mockk
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.MockitoAnnotations
-import org.mockito.junit.MockitoJUnitRunner
 
 @ExperimentalCoroutinesApi
-@RunWith(MockitoJUnitRunner::class)
 class FavoriteViewModelTest {
 
-    @Mock
-    private lateinit var getFavoriteCountriesUseCase: GetFavoriteCountriesUseCase
-
-    @Mock
-    private lateinit var getCountryByNameUseCase: GetCountryByNameUseCase
+    private val getFavoriteCountriesUseCase: GetFavoriteCountriesUseCase = mockk()
+    private val getCountryByNameUseCase: GetCountryByNameUseCase = mockk()
 
     private val dispatcher: TestDispatcher = UnconfinedTestDispatcher()
 
@@ -33,8 +26,6 @@ class FavoriteViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(dispatcher)
-        MockitoAnnotations.openMocks(this)
-
         viewModel = FavoritesViewModel(
             getFavoriteCountriesUseCase = getFavoriteCountriesUseCase,
             getCountryByNameUseCase = getCountryByNameUseCase

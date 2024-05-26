@@ -7,31 +7,20 @@ import com.google.common.truth.Truth.assertThat
 import com.noemi.worldcountries.usecase.GetCountriesUseCase
 import com.noemi.worldcountries.usecase.GetCountryUseCase
 import com.noemi.worldcountries.usecase.SaveCountryUseCase
+import io.mockk.mockk
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.MockitoAnnotations
-import org.mockito.junit.MockitoJUnitRunner
 
 @ExperimentalCoroutinesApi
-@RunWith(MockitoJUnitRunner::class)
 class CountriesViewModelTest {
 
-    @Mock
-    private lateinit var getCountriesUseCase: GetCountriesUseCase
-
-    @Mock
-    private lateinit var saveCountryUseCase: SaveCountryUseCase
-
-    @Mock
-    private lateinit var getCountryUseCase: GetCountryUseCase
-
-    @Mock
-    private lateinit var country: Country
+    private val getCountriesUseCase: GetCountriesUseCase = mockk()
+    private val saveCountryUseCase: SaveCountryUseCase = mockk()
+    private val getCountryUseCase: GetCountryUseCase = mockk()
+    private val country: Country = mockk()
 
     private val dispatcher: TestDispatcher = UnconfinedTestDispatcher()
 
@@ -40,8 +29,6 @@ class CountriesViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(dispatcher)
-        MockitoAnnotations.openMocks(this)
-
         viewModel = CountriesViewModel(
             getCountriesUseCase = getCountriesUseCase,
             saveCountryUseCase = saveCountryUseCase,
