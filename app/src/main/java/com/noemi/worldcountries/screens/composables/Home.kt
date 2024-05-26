@@ -156,7 +156,7 @@ private fun DisplayCountryDialog(country: DetailedCountry, onDismiss: () -> Unit
                 Spacer(modifier = modifier.height(16.dp))
 
                 Text(
-                    text = "Continent: ${country.continent}",
+                    text = stringResource(id = R.string.label_continent, country.continent),
                     modifier = modifier
                         .padding(start = 16.dp),
                     style = MaterialTheme.typography.bodyMedium
@@ -165,7 +165,7 @@ private fun DisplayCountryDialog(country: DetailedCountry, onDismiss: () -> Unit
                 Spacer(modifier = modifier.height(8.dp))
 
                 Text(
-                    text = "Currency: ${country.currency}",
+                    text = stringResource(id = R.string.label_currency, country.currency),
                     modifier = modifier
                         .padding(start = 16.dp),
                     style = MaterialTheme.typography.bodyMedium
@@ -174,7 +174,7 @@ private fun DisplayCountryDialog(country: DetailedCountry, onDismiss: () -> Unit
                 Spacer(modifier = modifier.height(8.dp))
 
                 Text(
-                    text = "Capital: ${country.capital}",
+                    text = stringResource(id = R.string.label_capital, country.capital),
                     modifier = modifier
                         .padding(start = 16.dp),
                     style = MaterialTheme.typography.bodyMedium
@@ -183,7 +183,7 @@ private fun DisplayCountryDialog(country: DetailedCountry, onDismiss: () -> Unit
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Language(s): ${country.language}",
+                    text = stringResource(id = R.string.label_languages, country.language),
                     modifier = modifier
                         .padding(start = 16.dp, end = 16.dp),
                     style = MaterialTheme.typography.bodyMedium

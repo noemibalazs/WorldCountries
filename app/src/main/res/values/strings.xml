@@ -6,4 +6,9 @@
     <string name="label_country">Country</string>
     <string name="label_search_hint">Enter country name</string>
     <string name="label_error_no_saved_result">Error, you need to save it first if you want to get it back.</string>
+
+    <string name="label_continent">Continent: %s</string>
+    <string name="label_currency">Currency: %s</string>
+    <string name="label_capital">Capital: %s</string>
+    <string name="label_languages">Language(s): %s</string>
 </resources>
