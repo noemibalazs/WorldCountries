@@ -1,60 +1,60 @@
 package com.noemi.worldcountries
 
-import com.apollographql.apollo3.ApolloClient
+import com.noemi.worldcountries.models.DetailedCountry
 import com.noemi.worldcountries.network.ApolloCountryClient
 import com.noemi.worldcountries.usecase.GetCountryUseCase
 import com.noemi.worldcountries.usecase.GetCountryUseCaseImpl
-import com.noemi.worldcountries.utils.BASE_URL
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.Before
 import org.junit.Test
-import org.mockito.MockitoAnnotations
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
 @ExperimentalCoroutinesApi
+@RunWith(JUnit4::class)
 class GetCountryUseCaseImplTest {
 
-    private val code = "HU"
-
     private val dispatcher: TestDispatcher = UnconfinedTestDispatcher()
-
+    private val apolloClient: ApolloCountryClient = mockk()
     private lateinit var useCase: GetCountryUseCase
+
+    private val code = "HU"
+    private val detailedCountry = mockk<DetailedCountry>()
 
     @Before
     fun setUp() {
-        MockitoAnnotations.openMocks(this)
-        val apolloClient = ApolloClient.Builder().serverUrl(BASE_URL).build()
         useCase = GetCountryUseCaseImpl(
-            apolloClient = ApolloCountryClient(apolloClient),
+            apolloClient = apolloClient,
             dispatcher = dispatcher
         )
     }
 
 
     @Test
-    fun `test get country and should be not null`() = runBlocking {
-        val job = launch {
-            val result = useCase.execute(code)
-            result?.shouldNotBe(null)
-        }
+    fun `test get country and should be successful`() = runBlocking {
 
-        job.cancelAndJoin()
+        coEvery { apolloClient.getCountry(code) } returns detailedCountry
+        coEvery { detailedCountry.code } returns code
+        coEvery { detailedCountry.name } returns "Hungary"
+
+        useCase.execute(code)
+
+        coVerify { apolloClient.getCountry(code) }
     }
 
 
     @Test
     fun `test get country and should be null`() = runBlocking {
-        val job = launch {
-            val result = useCase.execute("")
-            result?.shouldBe(null)
-        }
+        coEvery { apolloClient.getCountry("") } returns null
 
-        job.cancelAndJoin()
+        useCase.execute("")
+
+        coVerify { apolloClient.getCountry("") }
     }
 }

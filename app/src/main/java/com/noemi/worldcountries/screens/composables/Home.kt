@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.noemi.worldcountries.R
 import com.noemi.worldcountries.models.Country
 import com.noemi.worldcountries.models.DetailedCountry
@@ -22,39 +23,37 @@ import com.noemi.worldcountries.screens.viewmodel.CountryViewModel
 import com.noemi.worldcountries.utils.CountryAppBar
 
 @Composable
-fun HomeScreen(viewModel: CountryViewModel) {
-
+fun HomeScreen(modifier: Modifier = Modifier) {
+    val viewModel = hiltViewModel<CountryViewModel>()
     val countriesState by viewModel.countriesState.collectAsState()
     val countryState by viewModel.countryState.collectAsState()
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
 
         CountryAppBar(title = stringResource(id = R.string.label_countries))
 
-        HomeScreenRoot(countriesState = countriesState, viewModel = viewModel)
+        HomeScreenRoot(countriesState = countriesState, onSaveCountry = viewModel::saveDisplayCountry)
 
         countryState.selectedCountry?.let {
-            DisplayCountryDialog(country = it) {
-                viewModel.dismissCountry()
-            }
+            DisplayCountryDialog(country = it, onDismiss = viewModel::dismissCountry)
         }
     }
 }
 
 @Composable
-private fun HomeScreenRoot(countriesState: CountryViewModel.CountriesState, viewModel: CountryViewModel) {
+private fun HomeScreenRoot(countriesState: CountryViewModel.CountriesState, onSaveCountry: (Country) -> Unit, modifier: Modifier = Modifier) {
 
     ConstraintLayout(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         val (indicator, column) = createRefs()
 
         when (countriesState.isLoading) {
 
             true -> CircularProgressIndicator(
-                modifier = Modifier.constrainAs(indicator) {
+                modifier = modifier.constrainAs(indicator) {
                     linkTo(parent.start, parent.end)
                     linkTo(parent.top, parent.bottom)
                 },
@@ -64,7 +63,7 @@ private fun HomeScreenRoot(countriesState: CountryViewModel.CountriesState, view
 
             else -> LazyColumn(
                 contentPadding = PaddingValues(top = 8.dp, start = 8.dp, bottom = 20.dp, end = 8.dp),
-                modifier = Modifier.constrainAs(column) {
+                modifier = modifier.constrainAs(column) {
                     linkTo(parent.start, parent.end)
                     linkTo(parent.top, parent.bottom)
                 }) {
@@ -75,7 +74,7 @@ private fun HomeScreenRoot(countriesState: CountryViewModel.CountriesState, view
                 ) { country ->
                     CountryItemRow(
                         country = country,
-                        viewModel = viewModel
+                        onSaveCountry = onSaveCountry
                     )
                 }
             }
@@ -84,18 +83,18 @@ private fun HomeScreenRoot(countriesState: CountryViewModel.CountriesState, view
 }
 
 @Composable
-private fun CountryItemRow(country: Country, viewModel: CountryViewModel) {
+private fun CountryItemRow(country: Country, onSaveCountry: (Country) -> Unit, modifier: Modifier = Modifier) {
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .clickable { viewModel.saveDisplayCountry(country) },
+            .clickable { onSaveCountry(country) },
         verticalAlignment = Alignment.CenterVertically
     ) {
 
         Text(
             text = country.emoji,
-            modifier = Modifier
+            modifier = modifier
                 .size(36.dp)
                 .padding(start = 8.dp)
         )
@@ -103,14 +102,14 @@ private fun CountryItemRow(country: Country, viewModel: CountryViewModel) {
         Column(horizontalAlignment = Alignment.Start) {
             Text(
                 text = country.name,
-                modifier = Modifier
+                modifier = modifier
                     .padding(start = 16.dp, top = 8.dp),
                 style = MaterialTheme.typography.titleMedium
             )
 
             Text(
                 text = country.capital,
-                modifier = Modifier
+                modifier = modifier
                     .padding(start = 16.dp, top = 6.dp, bottom = 8.dp),
                 fontWeight = FontWeight.Medium,
                 style = MaterialTheme.typography.bodyMedium
@@ -120,11 +119,11 @@ private fun CountryItemRow(country: Country, viewModel: CountryViewModel) {
 }
 
 @Composable
-private fun DisplayCountryDialog(country: DetailedCountry, onDismiss: () -> Unit) {
+private fun DisplayCountryDialog(country: DetailedCountry, onDismiss: () -> Unit, modifier: Modifier = Modifier) {
     Dialog(onDismissRequest = onDismiss) {
 
         Card(
-            modifier = Modifier
+            modifier = modifier
                 .background(
                     shape = RoundedCornerShape(corner = CornerSize(8.dp)),
                     color = MaterialTheme.colorScheme.surfaceVariant
@@ -137,7 +136,7 @@ private fun DisplayCountryDialog(country: DetailedCountry, onDismiss: () -> Unit
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier
+                    modifier = modifier
                         .fillMaxWidth()
                         .padding(8.dp)
                 ) {
@@ -146,7 +145,7 @@ private fun DisplayCountryDialog(country: DetailedCountry, onDismiss: () -> Unit
                         style = MaterialTheme.typography.bodyLarge
                     )
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = modifier.width(8.dp))
 
                     Text(
                         text = country.name,
@@ -154,29 +153,29 @@ private fun DisplayCountryDialog(country: DetailedCountry, onDismiss: () -> Unit
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = modifier.height(16.dp))
 
                 Text(
                     text = "Continent: ${country.continent}",
-                    modifier = Modifier
+                    modifier = modifier
                         .padding(start = 16.dp),
                     style = MaterialTheme.typography.bodyMedium
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = modifier.height(8.dp))
 
                 Text(
                     text = "Currency: ${country.currency}",
-                    modifier = Modifier
+                    modifier = modifier
                         .padding(start = 16.dp),
                     style = MaterialTheme.typography.bodyMedium
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = modifier.height(8.dp))
 
                 Text(
                     text = "Capital: ${country.capital}",
-                    modifier = Modifier
+                    modifier = modifier
                         .padding(start = 16.dp),
                     style = MaterialTheme.typography.bodyMedium
                 )
@@ -185,12 +184,12 @@ private fun DisplayCountryDialog(country: DetailedCountry, onDismiss: () -> Unit
 
                 Text(
                     text = "Language(s): ${country.language}",
-                    modifier = Modifier
+                    modifier = modifier
                         .padding(start = 16.dp, end = 16.dp),
                     style = MaterialTheme.typography.bodyMedium
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = modifier.height(8.dp))
             }
         }
     }

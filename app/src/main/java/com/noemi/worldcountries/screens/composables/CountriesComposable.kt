@@ -12,20 +12,14 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.noemi.worldcountries.screens.navigation.NavRoutes
 import com.noemi.worldcountries.screens.navigation.CountryNavigationItems
-import com.noemi.worldcountries.screens.viewmodel.CountryViewModel
-import com.noemi.worldcountries.screens.viewmodel.FavoritesViewModel
 
 @Composable
-fun CountriesApp(
-    navController: NavHostController = rememberNavController(),
-    countryViewModel: CountryViewModel,
-    favoritesViewModel: FavoritesViewModel
-) {
+fun CountriesApp(navController: NavHostController = rememberNavController()) {
 
     Scaffold(
         content = {
             Column {
-                NavigationHost(navController = navController, countryViewModel = countryViewModel, favoritesViewModel = favoritesViewModel)
+                NavigationHost(navController = navController)
             }
         },
         bottomBar = { BottomNavigationBar(navController = navController) }
@@ -33,14 +27,14 @@ fun CountriesApp(
 }
 
 @Composable
-private fun NavigationHost(navController: NavHostController, countryViewModel: CountryViewModel, favoritesViewModel: FavoritesViewModel) {
+private fun NavigationHost(navController: NavHostController) {
     NavHost(navController = navController, startDestination = NavRoutes.Home.route) {
         composable(NavRoutes.Home.route) {
-            HomeScreen(countryViewModel)
+            HomeScreen()
         }
 
         composable(NavRoutes.Favorites.route) {
-            FavoritesScreen(favoritesViewModel)
+            FavoritesScreen()
         }
     }
 }

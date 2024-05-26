@@ -6,7 +6,6 @@ import androidx.compose.ui.input.key.NativeKeyEvent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
 import com.noemi.worldcountries.screens.composables.CountriesApp
@@ -31,7 +30,7 @@ class CountriesActivityTest {
             navController?.navigatorProvider?.addNavigator(ComposeNavigator())
 
             navController?.let {
-                CountriesApp(it, hiltViewModel(), hiltViewModel())
+                CountriesApp(it)
             }
         }
     }

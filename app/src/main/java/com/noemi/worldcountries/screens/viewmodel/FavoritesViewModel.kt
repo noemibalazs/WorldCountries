@@ -40,9 +40,9 @@ class FavoritesViewModel @Inject constructor(
         }
     }
 
-    fun findCountryByName(countryName: String) {
+    fun findCountryByName() {
         viewModelScope.launch {
-            val result = getCountryByNameUseCase.execute(countryName)
+            val result = getCountryByNameUseCase.execute(searchedCountryName)
             _countryState.update { it.copy(country = result) }
             isSearchError = result == null
         }
@@ -56,6 +56,10 @@ class FavoritesViewModel @Inject constructor(
 
     fun updateSearchedCountryName(countryName: String) {
         searchedCountryName = countryName
+    }
+
+    fun updateErrorState(state: Boolean) {
+        isSearchError = state
     }
 
     data class CountryState(

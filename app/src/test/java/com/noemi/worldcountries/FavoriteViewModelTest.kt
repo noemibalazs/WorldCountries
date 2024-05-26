@@ -82,7 +82,7 @@ class FavoriteViewModelTest {
             }
         }
 
-        viewModel.findCountryByName(name)
+        viewModel.findCountryByName()
 
         job.cancelAndJoin()
     }

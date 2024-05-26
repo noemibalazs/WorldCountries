@@ -8,7 +8,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.noemi.worldcountries.screens.composables.CountriesApp
 import com.noemi.worldcountries.ui.theme.CountriesComposedTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,10 +22,7 @@ class CountriesActivity : ComponentActivity() {
         setContent {
             CountriesComposedTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    CountriesApp(
-                        countryViewModel = hiltViewModel(),
-                        favoritesViewModel = hiltViewModel()
-                    )
+                    CountriesApp()
                 }
             }
         }

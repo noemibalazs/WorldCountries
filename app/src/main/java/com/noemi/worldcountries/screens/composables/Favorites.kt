@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.noemi.worldcountries.R
 import com.noemi.worldcountries.models.Country
 import com.noemi.worldcountries.screens.viewmodel.FavoritesViewModel
@@ -37,7 +38,8 @@ import kotlinx.coroutines.delay
 
 
 @Composable
-fun FavoritesScreen(viewModel: FavoritesViewModel) {
+fun FavoritesScreen() {
+    val viewModel = hiltViewModel<FavoritesViewModel>()
     val favoritesState by viewModel.favoriteCountriesState.collectAsState()
     val countryState by viewModel.countryState.collectAsState()
 
@@ -45,21 +47,34 @@ fun FavoritesScreen(viewModel: FavoritesViewModel) {
 
         CountryAppBar(title = stringResource(id = R.string.label_favorites))
 
-        CountrySearchTextField(viewModel = viewModel)
+        CountrySearchTextField(
+            searchedCountry = viewModel.searchedCountryName,
+            onUpdateSearchedCountry = viewModel::updateSearchedCountryName,
+            searchError = viewModel.isSearchError,
+            onUpdateError = viewModel::updateErrorState,
+            onFindCountry = viewModel::findCountryByName
+        )
 
         FavoriteScreenRoot(countries = favoritesState)
 
         countryState.country?.let { country ->
-            DisplaySearchedCountryDialog(country = country) {
+            DisplaySearchedCountryDialog(country = country, onDismiss = {
                 viewModel.dismissCountry()
                 viewModel.updateSearchedCountryName("")
-            }
+            })
         }
     }
 }
 
 @Composable
-private fun CountrySearchTextField(viewModel: FavoritesViewModel) {
+private fun CountrySearchTextField(
+    searchedCountry: String,
+    onUpdateSearchedCountry: (String) -> Unit,
+    searchError: Boolean,
+    onUpdateError: (Boolean) -> Unit,
+    onFindCountry: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -69,13 +84,13 @@ private fun CountrySearchTextField(viewModel: FavoritesViewModel) {
     }
 
     OutlinedTextField(
-        modifier = Modifier
+        modifier = modifier
             .focusRequester(focusRequester = focusRequester)
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, top = 20.dp),
-        value = viewModel.searchedCountryName,
+        value = searchedCountry,
         onValueChange = { countryName ->
-            viewModel.updateSearchedCountryName(countryName)
+            onUpdateSearchedCountry(countryName)
         },
         label = { Text(text = stringResource(id = R.string.label_country)) },
         placeholder = {
@@ -84,9 +99,9 @@ private fun CountrySearchTextField(viewModel: FavoritesViewModel) {
                 style = MaterialTheme.typography.titleMedium
             )
         },
-        isError = viewModel.isSearchError,
+        isError = searchError,
         supportingText = {
-            if (viewModel.isSearchError)
+            if (searchError)
                 Text(text = stringResource(id = R.string.label_error_no_saved_result))
         },
         singleLine = true,
@@ -97,7 +112,7 @@ private fun CountrySearchTextField(viewModel: FavoritesViewModel) {
             capitalization = KeyboardCapitalization.Words
         ),
         keyboardActions = KeyboardActions(onDone = {
-            viewModel.findCountryByName(viewModel.searchedCountryName)
+            onFindCountry.invoke()
         }),
         colors = OutlinedTextFieldDefaults.colors(
             cursorColor = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -109,10 +124,10 @@ private fun CountrySearchTextField(viewModel: FavoritesViewModel) {
             Icon(
                 imageVector = Icons.Default.Clear,
                 contentDescription = null,
-                modifier = Modifier.clickable {
+                modifier = modifier.clickable {
                     keyboardController?.hide()
-                    viewModel.updateSearchedCountryName("")
-                    viewModel.isSearchError = false
+                    onUpdateSearchedCountry.invoke("")
+                    onUpdateError.invoke(false)
                 }
             )
         }
@@ -120,15 +135,15 @@ private fun CountrySearchTextField(viewModel: FavoritesViewModel) {
 }
 
 @Composable
-private fun FavoriteScreenRoot(countries: List<Country>) {
+private fun FavoriteScreenRoot(countries: List<Country>, modifier: Modifier = Modifier) {
     ConstraintLayout(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         val column = createRef()
 
         LazyColumn(
             contentPadding = PaddingValues(start = 8.dp, end = 8.dp, top = 20.dp, bottom = 20.dp),
-            modifier = Modifier.constrainAs(column) {
+            modifier = modifier.constrainAs(column) {
                 linkTo(parent.start, parent.end)
                 linkTo(parent.top, parent.bottom)
                 height = Dimension.fillToConstraints
@@ -146,16 +161,16 @@ private fun FavoriteScreenRoot(countries: List<Country>) {
 }
 
 @Composable
-private fun FavoriteCountryItemRow(country: Country) {
+private fun FavoriteCountryItemRow(country: Country, modifier: Modifier = Modifier) {
 
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
         Text(
             text = country.emoji,
-            modifier = Modifier
+            modifier = modifier
                 .size(36.dp)
                 .padding(start = 8.dp)
         )
@@ -163,14 +178,14 @@ private fun FavoriteCountryItemRow(country: Country) {
         Column(horizontalAlignment = Alignment.Start) {
             Text(
                 text = country.name,
-                modifier = Modifier
+                modifier = modifier
                     .padding(start = 16.dp, top = 8.dp),
                 style = MaterialTheme.typography.titleMedium
             )
 
             Text(
                 text = country.capital,
-                modifier = Modifier
+                modifier = modifier
                     .padding(start = 16.dp, top = 6.dp, bottom = 8.dp),
                 fontWeight = FontWeight.Normal,
                 style = MaterialTheme.typography.bodyMedium
@@ -180,18 +195,18 @@ private fun FavoriteCountryItemRow(country: Country) {
 }
 
 @Composable
-private fun DisplaySearchedCountryDialog(country: Country, onDismiss: () -> Unit) {
+private fun DisplaySearchedCountryDialog(country: Country, onDismiss: () -> Unit, modifier: Modifier = Modifier) {
     Dialog(onDismissRequest = onDismiss) {
 
         Card(
-            modifier = Modifier
+            modifier = modifier
                 .background(
                     shape = RoundedCornerShape(corner = CornerSize(8.dp)),
                     color = MaterialTheme.colorScheme.surfaceVariant
                 )
         ) {
             Row(
-                modifier = Modifier
+                modifier = modifier
                     .fillMaxWidth()
                     .padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -199,7 +214,7 @@ private fun DisplaySearchedCountryDialog(country: Country, onDismiss: () -> Unit
 
                 Text(
                     text = country.emoji,
-                    modifier = Modifier
+                    modifier = modifier
                         .size(36.dp)
                         .padding(start = 8.dp)
                 )
@@ -207,14 +222,14 @@ private fun DisplaySearchedCountryDialog(country: Country, onDismiss: () -> Unit
                 Column(horizontalAlignment = Alignment.Start) {
                     Text(
                         text = country.name,
-                        modifier = Modifier
+                        modifier = modifier
                             .padding(start = 16.dp, top = 8.dp),
                         style = MaterialTheme.typography.titleMedium
                     )
 
                     Text(
                         text = country.capital,
-                        modifier = Modifier
+                        modifier = modifier
                             .padding(start = 16.dp, top = 6.dp, bottom = 8.dp),
                         fontWeight = FontWeight.Normal,
                         style = MaterialTheme.typography.bodyMedium
