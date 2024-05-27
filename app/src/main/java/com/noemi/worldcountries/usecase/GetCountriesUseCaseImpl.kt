@@ -12,6 +12,6 @@ class GetCountriesUseCaseImpl @Inject constructor(
 ) : GetCountriesUseCase {
 
     override suspend fun execute(): List<Country> = withContext(dispatcher) {
-        apolloClient.getCountries()
+        apolloClient.getCountries().sortedBy { it.name }
     }
 }
