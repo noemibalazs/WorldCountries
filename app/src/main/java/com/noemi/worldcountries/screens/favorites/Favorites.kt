@@ -2,6 +2,7 @@ package com.noemi.worldcountries.screens.favorites
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.*
@@ -135,6 +137,9 @@ private fun CountrySearchTextField(
 
 @Composable
 private fun FavoritesRoot(countries: List<Country>, modifier: Modifier = Modifier) {
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     ConstraintLayout(
         modifier = modifier.fillMaxSize()
     ) {
@@ -142,11 +147,25 @@ private fun FavoritesRoot(countries: List<Country>, modifier: Modifier = Modifie
 
         LazyColumn(
             contentPadding = PaddingValues(start = 8.dp, end = 8.dp, top = 20.dp, bottom = 20.dp),
-            modifier = modifier.constrainAs(column) {
-                linkTo(parent.start, parent.end)
-                linkTo(parent.top, parent.bottom)
-                height = Dimension.fillToConstraints
-            }
+            modifier = modifier
+                .focusRequester(focusRequester)
+                .constrainAs(column) {
+                    linkTo(parent.start, parent.end)
+                    linkTo(parent.top, parent.bottom)
+                    height = Dimension.fillToConstraints
+                }
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onPress = {
+                            focusRequester.requestFocus()
+                            keyboardController?.hide()
+                        },
+                        onTap = {
+                            focusRequester.requestFocus()
+                            keyboardController?.hide()
+                        }
+                    )
+                }
         ) {
 
             items(
