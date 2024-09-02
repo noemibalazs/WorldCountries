@@ -1,5 +1,6 @@
 package com.noemi.worldcountries.screens.main
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -15,6 +16,7 @@ import com.noemi.worldcountries.screens.favorites.FavoritesScreen
 import com.noemi.worldcountries.screens.navigation.NavRoutes
 import com.noemi.worldcountries.screens.navigation.CountryNavigationItems
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CountriesApp(navController: NavHostController = rememberNavController()) {
 
