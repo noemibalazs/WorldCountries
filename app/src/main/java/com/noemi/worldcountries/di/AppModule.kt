@@ -64,26 +64,26 @@ class AppModule {
     @Provides
     @Singleton
     fun providesGetCountriesUseCase(countryClient: CountryClient, dispatcher: CoroutineDispatcher): GetCountriesUseCase =
-        GetCountriesUseCaseImpl(countryClient, dispatcher)
+        GetCountriesUseCase(countryClient, dispatcher)
 
     @Provides
     @Singleton
     fun providesGetCountryByNameUseCase(countryDAO: CountryDAO, dispatcher: CoroutineDispatcher): GetCountryByNameUseCase =
-        GetCountryByNameUseCaseImpl(countryDAO, dispatcher)
+        GetCountryByNameUseCase(countryDAO, dispatcher)
 
 
     @Provides
     @Singleton
     fun providesGetCountryUseCase(countryClient: CountryClient, dispatcher: CoroutineDispatcher): GetCountryUseCase =
-        GetCountryUseCaseImpl(countryClient, dispatcher)
+        GetCountryUseCase(countryClient, dispatcher)
 
     @Provides
     @Singleton
     fun providesSaveCountryUseCase(countryDAO: CountryDAO, dispatcher: CoroutineDispatcher): SaveCountryUseCase =
-        SaveCountryUseCaseImpl(countryDAO, dispatcher)
+        SaveCountryUseCase(countryDAO, dispatcher)
 
     @Provides
     @Singleton
     fun providesGetFavoriteCountriesUseCase(countryDAO: CountryDAO, dispatcher: CoroutineDispatcher): GetFavoriteCountriesUseCase =
-        GetFavoriteCountriesUseCaseImpl(countryDAO, dispatcher)
+        GetFavoriteCountriesUseCase(countryDAO, dispatcher)
 }

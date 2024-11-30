@@ -51,7 +51,7 @@ class CountriesViewModelTest {
                 val state = awaitItem()
 
                 assertThat(state.isLoading).isFalse()
-                val countries = getCountriesUseCase.execute()
+                val countries = getCountriesUseCase.invoke()
                 assertThat(state.countries).isEqualTo(countries)
 
                 cancelAndConsumeRemainingEvents()
@@ -66,12 +66,12 @@ class CountriesViewModelTest {
     @Test
     fun `test get country and should pass`() = runBlocking {
         val job = launch {
-            saveCountryUseCase.execute(country)
+            saveCountryUseCase.invoke(country)
 
             viewModel.countryState.test {
                 val state = awaitItem()
 
-                val detailedCountry = getCountryUseCase.execute(country.code)
+                val detailedCountry = getCountryUseCase.invoke(country.code)
                 assertThat(state.selectedCountry).isEqualTo(detailedCountry)
 
                 cancelAndConsumeRemainingEvents()

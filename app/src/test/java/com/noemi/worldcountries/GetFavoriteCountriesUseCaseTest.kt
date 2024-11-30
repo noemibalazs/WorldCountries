@@ -3,7 +3,6 @@ package com.noemi.worldcountries
 import com.noemi.worldcountries.models.Country
 import com.noemi.worldcountries.room.CountryDAO
 import com.noemi.worldcountries.usecase.GetFavoriteCountriesUseCase
-import com.noemi.worldcountries.usecase.GetFavoriteCountriesUseCaseImpl
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -20,7 +19,7 @@ import org.junit.runners.JUnit4
 
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
-class GetFavoriteCountriesUseCaseImplTest {
+class GetFavoriteCountriesUseCaseTest {
 
     private val countryDAO: CountryDAO = mockk()
 
@@ -33,7 +32,7 @@ class GetFavoriteCountriesUseCaseImplTest {
 
     @Before
     fun setUp() {
-        useCase = GetFavoriteCountriesUseCaseImpl(
+        useCase = GetFavoriteCountriesUseCase(
             dispatcher = dispatcher,
             countryDAO = countryDAO
         )
@@ -45,7 +44,7 @@ class GetFavoriteCountriesUseCaseImplTest {
         coEvery { countryDAO.observeCountries() } returns flowOf(countries)
         coEvery { countries.first().name } returns "Hungary"
 
-        useCase.execute()
+        useCase.invoke()
 
         coVerify { countryDAO.observeCountries() }
     }
@@ -55,7 +54,7 @@ class GetFavoriteCountriesUseCaseImplTest {
 
         coEvery { countryDAO.observeCountries() } returns emptyFlow()
 
-        useCase.execute()
+        useCase.invoke()
 
         coVerify { countryDAO.observeCountries() }
     }

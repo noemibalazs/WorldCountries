@@ -3,7 +3,6 @@ package com.noemi.worldcountries
 import com.noemi.worldcountries.models.DetailedCountry
 import com.noemi.worldcountries.network.ApolloCountryClient
 import com.noemi.worldcountries.usecase.GetCountryUseCase
-import com.noemi.worldcountries.usecase.GetCountryUseCaseImpl
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -18,7 +17,7 @@ import org.junit.runners.JUnit4
 
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
-class GetCountryUseCaseImplTest {
+class GetCountryUseCaseTest {
 
     private val dispatcher: TestDispatcher = UnconfinedTestDispatcher()
     private val apolloClient: ApolloCountryClient = mockk()
@@ -29,7 +28,7 @@ class GetCountryUseCaseImplTest {
 
     @Before
     fun setUp() {
-        useCase = GetCountryUseCaseImpl(
+        useCase = GetCountryUseCase(
             apolloClient = apolloClient,
             dispatcher = dispatcher
         )
@@ -43,7 +42,7 @@ class GetCountryUseCaseImplTest {
         coEvery { detailedCountry.code } returns code
         coEvery { detailedCountry.name } returns "Hungary"
 
-        useCase.execute(code)
+        useCase.invoke(code)
 
         coVerify { apolloClient.getCountry(code) }
     }
@@ -53,7 +52,7 @@ class GetCountryUseCaseImplTest {
     fun `test get country and should be null`() = runBlocking {
         coEvery { apolloClient.getCountry("") } returns null
 
-        useCase.execute("")
+        useCase.invoke("")
 
         coVerify { apolloClient.getCountry("") }
     }

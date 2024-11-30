@@ -37,7 +37,7 @@ class CountriesViewModel @Inject constructor(
             _countriesState.update {
                 it.copy(
                     isLoading = false,
-                    countries = getCountriesUseCase.execute()
+                    countries = getCountriesUseCase.invoke()
                 )
             }
         }
@@ -45,12 +45,12 @@ class CountriesViewModel @Inject constructor(
 
     fun saveDisplayCountry(country: Country) {
         viewModelScope.launch {
-            saveCountryUseCase.execute(country)
+            saveCountryUseCase.invoke(country)
 
             _countryState.update {
                 it.copy(
                     selectedCountry =
-                    getCountryUseCase.execute(country.code)
+                    getCountryUseCase.invoke(country.code)
                 )
 
             }

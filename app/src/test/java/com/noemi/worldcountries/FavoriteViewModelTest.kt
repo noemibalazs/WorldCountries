@@ -43,7 +43,7 @@ class FavoriteViewModelTest {
             viewModel.favoriteCountriesState.test {
                 val state = awaitItem()
 
-                val result = getFavoriteCountriesUseCase.execute().collect()
+                val result = getFavoriteCountriesUseCase.invoke().collect()
                 assertThat(state).isEqualTo(result)
 
                 cancelAndConsumeRemainingEvents()
@@ -65,7 +65,7 @@ class FavoriteViewModelTest {
             viewModel.countryState.test {
                 val state = awaitItem()
 
-                val result = getCountryByNameUseCase.execute(name)
+                val result = getCountryByNameUseCase.invoke(name)
                 assertThat(state).isEqualTo(result)
                 assertThat(viewModel.isSearchError).isEqualTo(false)
 

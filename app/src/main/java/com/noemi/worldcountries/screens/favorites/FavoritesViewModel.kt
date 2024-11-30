@@ -38,7 +38,7 @@ class FavoritesViewModel @Inject constructor(
 
     fun initialiseFavoriteCountries() {
         viewModelScope.launch {
-            getFavoriteCountriesUseCase.execute().onEach { countries ->
+            getFavoriteCountriesUseCase.invoke().onEach { countries ->
                 _favoriteCountriesState.value = countries.sortedBy { it.name }
             }.collect()
         }
@@ -46,7 +46,7 @@ class FavoritesViewModel @Inject constructor(
 
     fun findCountryByName() {
         viewModelScope.launch {
-            val result = getCountryByNameUseCase.execute(searchedCountryName)
+            val result = getCountryByNameUseCase.invoke(searchedCountryName)
             _countryState.update { it.copy(country = result) }
             isSearchError = result == null
         }

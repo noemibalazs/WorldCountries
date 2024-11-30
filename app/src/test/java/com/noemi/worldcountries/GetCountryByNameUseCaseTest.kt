@@ -3,7 +3,6 @@ package com.noemi.worldcountries
 import com.noemi.worldcountries.models.Country
 import com.noemi.worldcountries.room.CountryDAO
 import com.noemi.worldcountries.usecase.GetCountryByNameUseCase
-import com.noemi.worldcountries.usecase.GetCountryByNameUseCaseImpl
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -17,7 +16,7 @@ import org.junit.runners.JUnit4
 
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
-class GetCountryByNameUseCaseImplTest {
+class GetCountryByNameUseCaseTest {
 
     private val countryDAO: CountryDAO = mockk()
 
@@ -30,7 +29,7 @@ class GetCountryByNameUseCaseImplTest {
 
     @Before
     fun setUp() {
-        useCase = GetCountryByNameUseCaseImpl(
+        useCase = GetCountryByNameUseCase(
             countryDAO = countryDAO,
             dispatcher = dispatcher
         )
@@ -42,7 +41,7 @@ class GetCountryByNameUseCaseImplTest {
         coEvery { country.name } returns name
         coEvery { country.code } returns "HU"
 
-        useCase.execute(name)
+        useCase.invoke(name)
 
         coVerify { countryDAO.getCountryByName(name) }
     }
@@ -52,7 +51,7 @@ class GetCountryByNameUseCaseImplTest {
     fun `test get country by name and should be null`() = runBlocking {
         coEvery { countryDAO.getCountryByName("") } returns null
 
-        useCase.execute("")
+        useCase.invoke("")
 
         coVerify { countryDAO.getCountryByName("") }
     }
