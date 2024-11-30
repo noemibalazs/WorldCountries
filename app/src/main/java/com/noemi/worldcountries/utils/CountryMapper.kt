@@ -13,7 +13,7 @@ fun CountryQuery.Country.toDetailedCountry(): DetailedCountry = DetailedCountry(
     capital = capital ?: "No capital at this time",
     currency = currency ?: "No currency at this time",
     continent = continent.name,
-    language = languages.map { it.name }.joinToString(", ")
+    language = languages.joinToString(", ") { it.name }
 )
 
 fun CountriesQuery.Country.toCountry(): Country = Country(

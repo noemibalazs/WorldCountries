@@ -12,5 +12,5 @@ class GetFavoriteCountriesUseCase @Inject constructor(
     private val dispatcher: CoroutineDispatcher
 ) {
 
-    suspend operator fun invoke(): Flow<List<Country>> = countryDAO.observeCountries().flowOn(dispatcher)
+    operator fun invoke(): Flow<List<Country>> = countryDAO.observeCountries().flowOn(dispatcher)
 }
